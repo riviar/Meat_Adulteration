@@ -1,5 +1,10 @@
 rm(list = ls())
 graphics.off()
+
+#set directory auto
+setwd("~/Thesis/R scripts/Lecture script")
+
+#load libraries and scripts
 require(matlab)
 source("pca_eigen.r")
 source("pca_svd.r")
@@ -7,18 +12,23 @@ source("pca_eigen_3d.r")
 source("auto.r")
 source("mncn.r")
 source("rangescale.r")
-#set directory auto
-setwd("~/Thesis/R scripts/Lecture script")
-#static file load
-fileToLoad = "../../Data/batch2_classes.csv"
+######################
+#static file load for my format of data: ID/Batch/Class/wavelengths
+fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv"
 DATA <- read.table(fileToLoad, sep = ",", header = TRUE, row.names = 1)
-fieldsToIgnore <- c("Batch", "Adulteration")
+
+#ignore some columns and load rest to X
+fieldsToIgnore <- c("Batch", "Class")
 X <- DATA[,!(names(DATA) %in% fieldsToIgnore)]
+#######################
+#some scaling
 Xas <- auto(X)
 Xmncn <- mncn(X)
 Xrs <- rangescale(X)
 
-CLASS <- DATA$Adulteration
+#retrieve classes of samples
+CLASS <- DATA$Class
+#retrieve names of samples
 samplenames <- row.names(X)
 #wavelengths <- colnames(X)
 
@@ -37,7 +47,7 @@ pca_eigen(Xrs, samplenames, CLASS, "rangescale")
 
 ##########
 #PCA SVD
-#prcom() function is this version
+#prcom() function is this version or at least gives the same results
 ##########
 #noscale
 pca_svd(X, samplenames, CLASS, "noscale")
