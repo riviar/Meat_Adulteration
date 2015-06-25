@@ -1,5 +1,5 @@
 ############################
-#Loads csv data and formats it: ID/batch/class/wavelenths...
+#Loads csv data and formats it: ID/wavelenths.../batch/class
 #works only for formats Bx_yya/wavelengths, where x is batch number, yy is class
 #Rafal Kural
 ############################
@@ -51,4 +51,4 @@ for (i in 1:nrow(DataReconstructed)){
 }
 
 #save new data frame to csv file
-write.csv(DataReconstructed, file = "../../Data/Videometer_allbatches_kural_format.csv", row.names = TRUE)
+write.csv(DataReconstructed, file = "../../Data/Videometer_allbatches_kural_format.csv", row.names = FALSE)
