@@ -13,8 +13,12 @@ source("auto.r")
 source("mncn.r")
 source("rangescale.r")
 ######################
-#static file load for my format of data: ID/Batch/Class/wavelengths
-fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv"
+#static file load for kural format of data: ID/wavelengths/Batch/Class
+fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
+appendName = "VM"
+#fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
+#appendName = "FTIR"
+
 DATA <- read.table(fileToLoad, sep = ",", header = TRUE, row.names = 1)
 
 #ignore some columns and load rest to X
@@ -37,23 +41,23 @@ samplenames <- row.names(X)
 #worse results than in svd
 ##########
 #noscale
-pca_eigen(X, samplenames, CLASS, "noscale")
+pca_eigen(X, samplenames, CLASS, paste(appendName, "noscale", sep="_"))
 #autoscale
-pca_eigen(Xas, samplenames, CLASS, "autoscale")
+pca_eigen(Xas, samplenames, CLASS, paste(appendName, "autoscale", sep="_"))
 #meancentered
-pca_eigen(Xmncn, samplenames, CLASS, "meancentered")
+pca_eigen(Xmncn, samplenames, CLASS, paste(appendName, "meancentered", sep="_"))
 #rangescaled
-pca_eigen(Xrs, samplenames, CLASS, "rangescale")
+pca_eigen(Xrs, samplenames, CLASS, paste(appendName, "rangescale", sep="_"))
 
 ##########
 #PCA SVD
 #prcom() function is this version or at least gives the same results
 ##########
 #noscale
-pca_svd(X, samplenames, CLASS, "noscale")
+pca_svd(X, samplenames, CLASS, paste(appendName, "noscale", sep="_"))
 #autoscale
-pca_svd(Xas, samplenames, CLASS, "autoscale")
+pca_svd(Xas, samplenames, CLASS, paste(appendName, "autoscale", sep="_"))
 #meancentered
-pca_svd(Xmncn, samplenames, CLASS, "meancentered")
+pca_svd(Xmncn, samplenames, CLASS, paste(appendName, "meancentered", sep="_"))
 #rangescaled
-pca_svd(Xrs, samplenames, CLASS, "rangescale")
+pca_svd(Xrs, samplenames, CLASS, paste(appendName, "rangescale", sep="_"))

@@ -14,5 +14,5 @@ pca_eigen <- function(X, samplenames, CLASS, append_filename) {
   ILOADS1 <- solve(LOADS1)
   SCORES1 <- as.matrix(X) %*% ILOADS1
   
-  generate_plots_pdf(SCORES1, samplenames, CLASS, W1, paste("PCA_EIGEN_PLOTS_", append_filename, sep=""))
+  generate_plots_pdf(SCORES1, samplenames, CLASS, W1, paste("../PCA_Plots/PCA_EIGEN_PLOTS_", append_filename, sep=""))
 }
