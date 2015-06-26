@@ -15,8 +15,8 @@ CLASStrain <- CLASS[-seq(1, length(CLASS), 10)]
 #CLASStest <- CLASS[seq(1, length(CLASS), 10)]
 
 #train model
-#SVM_model <- svm(Xtrain, CLASStrain, scale=FALSE,type="C-classification",kernel="polynomial", degree=5)
-SVM_model <- svm(Xtrain, CLASStrain, scale=FALSE,type="C-classification",kernel="radial", gamma=7/ncol(Xtrain))
+#SVM_model <- svm(Xtrain, CLASStrain, scale=FALSE,type="C-classification",kernel="polynomial", degree=7)
+SVM_model <- svm(Xtrain, CLASStrain, scale=FALSE,type="C-classification",kernel="radial", gamma=4/ncol(Xtrain), cost=0.5)
 
 #predict classes
 CLASSpredicted <- (predict(SVM_model,X))
