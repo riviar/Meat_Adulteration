@@ -54,10 +54,10 @@ pca_eigen(Xrs, samplenames, CLASS, paste(appendName, "rangescale", sep="_"))
 #prcom() function is this version or at least gives the same results
 ##########
 #noscale
-pca_svd(X, samplenames, CLASS, paste(appendName, "noscale", sep="_"))
+SCORES <- pca_svd(X, samplenames, CLASS, paste(appendName, "noscale", sep="_"))
 #autoscale
 pca_svd(Xas, samplenames, CLASS, paste(appendName, "autoscale", sep="_"))
 #meancentered
 pca_svd(Xmncn, samplenames, CLASS, paste(appendName, "meancentered", sep="_"))
 #rangescaled
-pca_svd(Xrs, samplenames, CLASS, paste(appendName, "rangescale", sep="_"))
+SCORESrs <- pca_svd(Xrs, samplenames, CLASS, paste(appendName, "rangescale", sep="_"))
