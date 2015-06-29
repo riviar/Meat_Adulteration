@@ -20,4 +20,5 @@ pca_svd <- function (X, samplenames, CLASS, append_filename) {
   Wraw <- PCA$sdev^2
   
   generate_plots_pdf(SCORES2, samplenames, CLASS, Wraw, paste("../PCA_Plots/PCA_SVD_PLOTS_", append_filename, sep=""))
-}
+  return(SCORES2)
+  }
