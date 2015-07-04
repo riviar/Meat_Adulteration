@@ -1,12 +1,29 @@
 ##############################################
 # Performs SVM                               #
-# Requires running 1.PCA_analysis.r before   #
 #                                            #
 # Rafal Kural                                #
 ##############################################
 require(e1071)
 
-## !! consider ensuring that test array has representatives of ALL classes) !! ##
+#set working directory to script directory
+setwd("~/Thesis/R scripts/Lecture script")
+
+###### LOAD DATA FROM FILE ###################
+# name of csv file in format of data: ID/wavelengths/Batch/Class
+fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
+#fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
+
+# load chosen file
+DATA <- read.table(fileToLoad, sep = ",", header = TRUE, row.names = 1)
+
+# columns to ignore when extracting wavelength data
+fieldsToIgnore <- c("Batch", "Class")
+# extract wavelength data
+X <- DATA[,!(names(DATA) %in% fieldsToIgnore)]
+
+# extract classes
+CLASS <- DATA$Class
+###### DATA LOAD END #########################
 
 ###### SETTING TRAINING AND TEST DATA ####################
 #retrieve training variables
@@ -104,21 +121,3 @@ for (kernelType_temp in kernelType) {
     }
   }
 }
-#train model
-#SVM_model <- svm(Xtrain, CLASStrain, scale=FALSE,type="C-classification",kernel="polynomial", degree=7)
-#SVM_model <- svm(Xtrain, CLASStrain, scale=FALSE,type="C-classification",kernel="radial", gamma=4/ncol(Xtrain), cost=0.5)
-
-#predict classes
-#CLASSpredicted <- (predict(SVM_model,X))
-
-#create hit/miss vector
-#hitmiss <- c(rep("0", length(CLASSpredicted)))
-#for (i in 1:length(CLASSpredicted)) {
-#  if (CLASS[i] == CLASSpredicted[i]) {
-#    hitmiss[i] <- "1"
-#  }
-#}
-
-#create frame for results of test
-#resultTable <- data.frame(CLASS, CLASSpredicted, hitmiss)
-#write.csv(resultTable, file = "Result_SVM_VM_noscale_Radial.csv")

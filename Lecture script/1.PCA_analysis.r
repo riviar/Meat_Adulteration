@@ -1,7 +1,15 @@
+##############################################
+# Performs PCA viar Eugen Vectors            #
+# and Singular Value Decomposition           #
+# Results available as pdf files             #
+#                                            #
+# Rafal Kural                                #
+##############################################
+
 rm(list = ls())
 graphics.off()
 
-#set directory auto
+#set working directory to script directory
 setwd("~/Thesis/R scripts/Lecture script")
 
 #load libraries and scripts
@@ -25,16 +33,17 @@ DATA <- read.table(fileToLoad, sep = ",", header = TRUE, row.names = 1)
 fieldsToIgnore <- c("Batch", "Class")
 X <- DATA[,!(names(DATA) %in% fieldsToIgnore)]
 #######################
-#some scaling
-Xas <- auto(X)
-Xmncn <- mncn(X)
-Xrs <- rangescale(X)
 
 #retrieve classes of samples
 CLASS <- DATA$Class
 #retrieve names of samples
 samplenames <- row.names(X)
 #wavelengths <- colnames(X)
+
+#some scaling
+Xas <- auto(X)
+Xmncn <- mncn(X)
+Xrs <- rangescale(X)
 
 ##########
 #PCA eigen
@@ -54,10 +63,10 @@ pca_eigen(Xrs, samplenames, CLASS, paste(appendName, "rangescale", sep="_"))
 #prcom() function is this version or at least gives the same results
 ##########
 #noscale
-SCORES <- pca_svd(X, samplenames, CLASS, paste(appendName, "noscale", sep="_"))
+pca_svd(X, samplenames, CLASS, paste(appendName, "noscale", sep="_"))
 #autoscale
 pca_svd(Xas, samplenames, CLASS, paste(appendName, "autoscale", sep="_"))
 #meancentered
 pca_svd(Xmncn, samplenames, CLASS, paste(appendName, "meancentered", sep="_"))
 #rangescaled
-SCORESrs <- pca_svd(Xrs, samplenames, CLASS, paste(appendName, "rangescale", sep="_"))
+pca_svd(Xrs, samplenames, CLASS, paste(appendName, "rangescale", sep="_"))

@@ -1,12 +1,15 @@
+#####################################################################
+#performs pca via eigenvectors                                      #
+#generates pdf files with PCA plots of first 3 PCs                  #
+#X - input data matrix                                              #
+#samplenames - matrix with names of samples                         #
+#append_filename - what to append at the end of filename for plots  #
+#                                                                   #
+#Rafal Kural                                                        #
+#####################################################################
 pca_eigen <- function(X, samplenames, CLASS, append_filename) {
   source("generate_plots_pdf.r")
-  #performs pca via eigenvectors
-  #generates pdf files with PCA plots of first 3 PCs
-  #X - input data matrix
-  #samplenames - matrix with names of samples
-  #append_filename - what to append at the end of filename for plots
-  #
-  #Rafal Kural
+  
   COVmatrix <- cov(X)
   EIGEN <- eigen(COVmatrix)
   LOADS1 <- t(EIGEN$vectors)
