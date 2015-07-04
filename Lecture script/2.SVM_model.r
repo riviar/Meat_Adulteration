@@ -3,6 +3,8 @@
 #                                            #
 # Rafal Kural                                #
 ##############################################
+rm(list = ls())
+graphics.off()
 require(e1071)
 
 #set working directory to script directory
