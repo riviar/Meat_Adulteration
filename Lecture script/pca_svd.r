@@ -23,5 +23,9 @@ pca_svd <- function (X, samplenames, CLASS, append_filename) {
   SCORES2 <- PCA$x
   Wraw <- PCA$sdev^2
   
-  generate_plots_pdf(SCORES2, samplenames, CLASS, Wraw, paste("../PCA_Plots/PCA_SVD_PLOTS_", append_filename, sep=""))
+  # create directory for outputs (does nothing if it exists)
+  outputDir = "../PCA_Plots"
+  dir.create(path = outputDir, showWarnings = FALSE)
+  
+  generate_plots_pdf(SCORES2, samplenames, CLASS, Wraw, paste(outputDir, "/PCA_SVD_PLOTS_", append_filename, sep=""))
   }

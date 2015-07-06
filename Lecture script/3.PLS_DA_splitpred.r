@@ -8,6 +8,25 @@ rm(list = ls())
 graphics.off()
 require(plsgenomics)
 
+setwd("~/Thesis/R scripts/Lecture script")
+
+###### LOAD DATA FROM FILE ###################
+# name of csv file in format of data: ID/wavelengths/Batch/Class
+fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
+#fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
+
+# load chosen file
+DATA <- read.table(fileToLoad, sep = ",", header = TRUE, row.names = 1)
+
+# columns to ignore when extracting wavelength data
+fieldsToIgnore <- c("Batch", "Class")
+# extract wavelength data
+X <- DATA[,!(names(DATA) %in% fieldsToIgnore)]
+
+# extract classes
+CLASS <- DATA$Class
+###### DATA LOAD END #########################
+
 ###### SETTING TRAINING AND TEST DATA ####################
 #retrieve training variables
 Xtrain <- X[-seq(1, nrow(X), 4),] #original data
@@ -25,8 +44,11 @@ CLASStest <- CLASS[seq(1, length(CLASS), 4)]
 # Settings allow automating analysis process
 # additional file append - scaling or other, will be added to result file in form Result_addFileAppend_rest
 addFileAppend <- "noscale_VM_0.75_SPLITPRED"
+# create directory for outputs (does nothing if it exists)
+outputDir = "../PLSDA_results"
+dir.create(path = outputDir, showWarnings = FALSE)
 #### SETTINGS END ######################################
-  
+
 #retrieve sample ids by classes for split predictions
 id00 <- grep("^0%", CLASStrain)
 id10 <- grep("^10%", CLASStrain)
@@ -40,12 +62,13 @@ id80 <- grep("80%", CLASStrain)
 id90 <- grep("90%", CLASStrain)
 id100 <- grep("100%", CLASStrain)
 
-#perform pls-da
+#perform pls-da, ncom=30 optimal
 PLSDA <- pls.lda(Xtrain = Xtrain, Ytrain = CLASStrain, Xtest = Xtest, ncomp = 30)
   
 #initialize final predicted classes vector
 predictedFinal <- rep(0, length(PLSDA$predclass))
 
+# repeat prediction for all results with partial models
 for(i in 1:length(PLSDA$predclass)) {
   cat(paste("Processing data for test sample nr: ", i, " ..\n", sep=""))
   predclass <- PLSDA$predclass[i]
@@ -109,4 +132,4 @@ cat(paste(accuracy, "\n",sep = ""))
 #create frame for results of test
 resultTable <- data.frame(CLASStest, predictedFinal, hitmiss, accuracy)
 #save results table in csv file
-write.csv(resultTable, file = paste("../PLSDA_results/Result_", addFileAppend, ".csv", sep=""))      
+write.csv(resultTable, file = paste(outputDir, "/Result_", addFileAppend, ".csv", sep=""))      

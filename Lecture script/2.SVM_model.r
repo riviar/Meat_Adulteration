@@ -53,7 +53,11 @@ gammaVar <- c(1, 2, 3, 4, 5)
 degreeVar <- c(3, 5, 7, 9)
 # additional file append - scaling or other, will be added to result file in form Result_VM_addFileAppend_rest
 addFileAppend <- "noscale_FTIR_0.75"
+# create directory for outputs (does nothing if it exists)
+outputDir = "../SVM_results"
+dir.create(path = outputDir, showWarnings = FALSE)
 #### SETTINGS END ######################################
+
 
 #iterate over all chosen kernels
 for (kernelType_temp in kernelType) {
@@ -118,7 +122,7 @@ for (kernelType_temp in kernelType) {
         #create frame for results of test
         resultTable <- data.frame(CLASStest, CLASSpredicted, hitmiss, accuracy)
         #save results in csv file
-        write.csv(resultTable, file = paste("../SVM_results/Result_", addFileAppend, "_", kernelType_temp, "_C", cost_temp, "_degree", degreeVar_temp, ".csv", sep=""))      
+        write.csv(resultTable, file = paste(outputDir, "/Result_", addFileAppend, "_", kernelType_temp, "_C", cost_temp, "_degree", degreeVar_temp, ".csv", sep=""))      
       }
     }
   }

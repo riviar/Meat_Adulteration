@@ -1,5 +1,5 @@
 ##############################################
-# Performs SVM                               #
+# Performs PLS-DA                            #
 # Results available as csv files             #
 #                                            #
 # Rafal Kural                                #
@@ -44,6 +44,9 @@ CLASStest <- CLASS[seq(1, length(CLASS), 4)]
 componentsNumber <- c(1:40)
 # additional file append - scaling or other, will be added to result file name in form Result_addedFileAppend_rest
 addedFileAppend <- "noscale_VM_0.75"
+# create directory for outputs (does nothing if it exists)
+outputDir = "../PLSDA_results"
+dir.create(path = outputDir, showWarnings = FALSE)
 #### SETTINGS END ############################
 
 for (componentsNumber_temp in componentsNumber) {
@@ -69,5 +72,5 @@ for (componentsNumber_temp in componentsNumber) {
   #table will take form: ExpectedClass, PredictedClass, HitOrMiss, OverallAccuracy
   resultTable <- data.frame(CLASStest, PLSDA$predclass, hitmiss, accuracy)
   #save results table in csv file
-  write.csv(resultTable, file = paste("../PLSDA_results/Result_", addedFileAppend, "_", componentsNumber_temp, "_components", ".csv", sep=""))      
+  write.csv(resultTable, file = paste(outputDir, "/Result_", addedFileAppend, "_", componentsNumber_temp, "_components", ".csv", sep=""))      
 }
