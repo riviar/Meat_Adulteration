@@ -6,20 +6,21 @@
 # Rafal Kural                                #
 ##############################################
 
+# clear workspace and open windows
 rm(list = ls())
 graphics.off()
 
 #set working directory to script directory
-setwd("~/Thesis/R scripts/Lecture script")
+test <- dirname(sys.frame(1)$ofile)
+setwd(test)
 
-#load libraries and scripts
+#load required libraries and scripts
 require(matlab)
 source("pca_eigen.r")
 source("pca_svd.r")
-source("pca_eigen_3d.r")
-source("auto.r")
-source("mncn.r")
-source("rangescale.r")
+source("../Toolbox/scalings/auto.r")
+source("../Toolbox/scalings/mncn.r")
+source("../Toolbox/scalings/rangescale.r")
 ######################
 #static file load for kural format of data: ID/wavelengths/Batch/Class
 fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data

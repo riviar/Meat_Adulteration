@@ -4,12 +4,16 @@
 #                                            #
 # Rafal Kural                                #
 ##############################################
+# clear workspace and open windows
 rm(list = ls())
 graphics.off()
-require(plsgenomics)
 
 #set working directory to script directory
-setwd("~/Thesis/R scripts/Lecture script")
+test <- dirname(sys.frame(1)$ofile)
+setwd(test)
+
+#loading libraries and required scripts
+require(plsgenomics)
 
 ###### LOAD DATA FROM FILE ###################
 # name of csv file in format of data: ID/wavelengths/Batch/Class
@@ -18,6 +22,9 @@ fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab 
 
 # load chosen file
 DATA <- read.table(fileToLoad, sep = ",", header = TRUE, row.names = 1)
+# remove data from batch 2
+batch2Indices <- grep("b2", rownames(DATA))
+DATA <- DATA[-batch2Indices,]
 
 # columns to ignore when extracting wavelength data
 fieldsToIgnore <- c("Batch", "Class")
@@ -34,8 +41,8 @@ Xtrain <- X[-seq(1, nrow(X), 4),]
 CLASStrain <- CLASS[-seq(1, length(CLASS), 4)]
 
 #retrieve testing data
-Xtest <- X[seq(1, nrow(X), 4),]
-CLASStest <- CLASS[seq(1, length(CLASS), 4)]
+Xtest <- X
+CLASStest <- CLASS
 ###### END ###################################
 
 #### SETTINGS START ##########################
@@ -45,7 +52,7 @@ componentsNumber <- c(1:40)
 # additional file append - scaling or other, will be added to result file name in form Result_addedFileAppend_rest
 addedFileAppend <- "noscale_VM_0.75"
 # create directory for outputs (does nothing if it exists)
-outputDir = "../PLSDA_results"
+outputDir = "../Results/PLSDA_results"
 dir.create(path = outputDir, showWarnings = FALSE)
 #### SETTINGS END ############################
 
@@ -66,11 +73,14 @@ for (componentsNumber_temp in componentsNumber) {
   
   #calculate accuracy
   accuracy <- sum(as.numeric(hitmiss))/length(hitmiss)
+  
   #display accuracy
   cat(paste(accuracy, "\n",sep = ""))
+  
   #create frame for results of test
   #table will take form: ExpectedClass, PredictedClass, HitOrMiss, OverallAccuracy
   resultTable <- data.frame(CLASStest, PLSDA$predclass, hitmiss, accuracy)
+  
   #save results table in csv file
   write.csv(resultTable, file = paste(outputDir, "/Result_", addedFileAppend, "_", componentsNumber_temp, "_components", ".csv", sep=""))      
 }

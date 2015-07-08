@@ -59,7 +59,7 @@ generate_plots_pdf <- function(SCORES,samplenames,CLASS,varvector,filename,annot
   par(mar=c(5.1, 4.1, 4.1, 8.1), xpd=TRUE)
   plot(SCORES[,1], SCORES[,2], col=colorsVector, xlab = sprintf("PC1 (%1.0f%%)", variance[1]), ylab = sprintf("PC2 (%1.0f%%)", variance[2]), main = "PC1 vs PC2")
   if (annotate == TRUE) {
-    text(SCORES[,1], SCORES[,2], as.character(samplenames), col="gray")
+    text(SCORES[,1], SCORES[,2], as.character(samplenames), col="gray", pos = 1, cex = 0.4)
   }
   legend("topright", inset=c(-0.2,0), legend=unique(CLASS), cex=0.8, col=colors, pch=1)
 
@@ -67,7 +67,7 @@ generate_plots_pdf <- function(SCORES,samplenames,CLASS,varvector,filename,annot
   par(mar=c(5.1, 4.1, 4.1, 8.1), xpd=TRUE)
   plot(SCORES[,2], SCORES[,3], col=colorsVector, xlab = sprintf("PC2 (%1.0f%%)", variance[2]), ylab = sprintf("PC3 (%1.0f%%)", variance[3]), main = "PC2 vs PC3")
   if (annotate == TRUE) {
-    text(SCORES[,2], SCORES[,3], as.character(samplenames), col="gray")
+    text(SCORES[,2], SCORES[,3], as.character(samplenames), col="gray", pos = 1, cex = 0.4)
   }
   legend("topright", inset=c(-0.2,0), legend=unique(CLASS), cex=0.8, col=colors, pch=1)
 
@@ -75,7 +75,7 @@ generate_plots_pdf <- function(SCORES,samplenames,CLASS,varvector,filename,annot
   par(mar=c(5.1, 4.1, 4.1, 8.1), xpd=TRUE)
   plot(SCORES[,1], SCORES[,3], col=colorsVector, xlab = sprintf("PC1 (%1.0f%%)", variance[1]), ylab = sprintf("PC3 (%1.0f%%)", variance[3]), main = "PC1 vs PC3")
   if (annotate == TRUE) {
-    text(SCORES[,1], SCORES[,3], as.character(samplenames), col="gray")
+    text(SCORES[,1], SCORES[,3], as.character(samplenames), col="gray", pos = 1, cex = 0.4)
   }
   legend("topright", inset=c(-0.2,0), legend=unique(CLASS), cex=0.8, col=colors, pch=1)
   

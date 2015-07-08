@@ -4,11 +4,16 @@
 #                                            #
 # Rafal Kural                                #
 ##############################################
+# clear workspace and open windows
 rm(list = ls())
 graphics.off()
-require(plsgenomics)
 
-setwd("~/Thesis/R scripts/Lecture script")
+#set working directory to script directory
+test <- dirname(sys.frame(1)$ofile)
+setwd(test)
+
+#loading libraries and required scripts
+require(plsgenomics)
 
 ###### LOAD DATA FROM FILE ###################
 # name of csv file in format of data: ID/wavelengths/Batch/Class
@@ -45,7 +50,7 @@ CLASStest <- CLASS[seq(1, length(CLASS), 4)]
 # additional file append - scaling or other, will be added to result file in form Result_addFileAppend_rest
 addFileAppend <- "noscale_VM_0.75_SPLITPRED"
 # create directory for outputs (does nothing if it exists)
-outputDir = "../PLSDA_results"
+outputDir = "../Results/PLSDA_results"
 dir.create(path = outputDir, showWarnings = FALSE)
 #### SETTINGS END ######################################
 
@@ -62,7 +67,7 @@ id80 <- grep("80%", CLASStrain)
 id90 <- grep("90%", CLASStrain)
 id100 <- grep("100%", CLASStrain)
 
-#perform pls-da, ncom=30 optimal
+#perform pls-da, ncom=30 optimal for VM
 PLSDA <- pls.lda(Xtrain = Xtrain, Ytrain = CLASStrain, Xtest = Xtest, ncomp = 30)
   
 #initialize final predicted classes vector

@@ -3,12 +3,16 @@
 #                                            #
 # Rafal Kural                                #
 ##############################################
+# clear workspace and open windows
 rm(list = ls())
 graphics.off()
-require(e1071)
 
 #set working directory to script directory
-setwd("~/Thesis/R scripts/Lecture script")
+test <- dirname(sys.frame(1)$ofile)
+setwd(test)
+
+#loading libraries and required scripts
+require(e1071)
 
 ###### LOAD DATA FROM FILE ###################
 # name of csv file in format of data: ID/wavelengths/Batch/Class
@@ -17,6 +21,9 @@ fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab 
 
 # load chosen file
 DATA <- read.table(fileToLoad, sep = ",", header = TRUE, row.names = 1)
+# remove data from batch 2
+batch2Indices <- grep("b2", rownames(DATA))
+DATA <- DATA[-batch2Indices,]
 
 # columns to ignore when extracting wavelength data
 fieldsToIgnore <- c("Batch", "Class")
@@ -28,6 +35,9 @@ CLASS <- DATA$Class
 ###### DATA LOAD END #########################
 
 ###### SETTING TRAINING AND TEST DATA ####################
+# Optionally extract PCs and use them instead of raw data in model creation
+PCA <- prcomp(X, retX=T, center=F, scale=F)
+X <- PCA$x
 #retrieve training variables
 Xtrain <- X[-seq(1, nrow(X), 4),] #original data
 #SCORES_SVD <- SCORESrs[,1:9]
@@ -52,9 +62,9 @@ gammaVar <- c(1, 2, 3, 4, 5)
 # degree - degree of polynomial used for separation in polynomial kernel, allows vector of values
 degreeVar <- c(3, 5, 7, 9)
 # additional file append - scaling or other, will be added to result file in form Result_VM_addFileAppend_rest
-addFileAppend <- "noscale_FTIR_0.75"
+addFileAppend <- "noscale_0.75"
 # create directory for outputs (does nothing if it exists)
-outputDir = "../SVM_results"
+outputDir = "../Results/SVM_results"
 dir.create(path = outputDir, showWarnings = FALSE)
 #### SETTINGS END ######################################
 
@@ -90,7 +100,7 @@ for (kernelType_temp in kernelType) {
         #create frame for results of test
         resultTable <- data.frame(CLASStest, CLASSpredicted, hitmiss, accuracy)
         #save results table in csv file
-        write.csv(resultTable, file = paste("../SVM_results/Result_", addFileAppend, "_", kernelType_temp, "_C", cost_temp, "_gamma", gammaVar_temp, ".csv", sep=""))      
+        write.csv(resultTable, file = paste(outputDir, "/Result_", addFileAppend, "_", kernelType_temp, "_C", cost_temp, "_gamma", gammaVar_temp, ".csv", sep=""))      
         }
     }
   }
@@ -122,7 +132,7 @@ for (kernelType_temp in kernelType) {
         #create frame for results of test
         resultTable <- data.frame(CLASStest, CLASSpredicted, hitmiss, accuracy)
         #save results in csv file
-        write.csv(resultTable, file = paste(outputDir, "/Result_", addFileAppend, "_", kernelType_temp, "_C", cost_temp, "_degree", degreeVar_temp, ".csv", sep=""))      
+        write.csv(resultTable, file = paste(outputDir, "/Result_", addFileAppend, "_", kernelType_temp, "_C", cost_temp, "_degree", degreeVar_temp, ".csv", sep=""))    
       }
     }
   }
