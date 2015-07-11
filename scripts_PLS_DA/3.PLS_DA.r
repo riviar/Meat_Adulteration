@@ -14,6 +14,7 @@ setwd(test)
 
 #loading libraries and required scripts
 require(plsgenomics)
+require(prospectr)
 
 ###### LOAD DATA FROM FILE ###################
 # name of csv file in format of data: ID/wavelengths/Batch/Class
@@ -41,8 +42,8 @@ Xtrain <- X[-seq(1, nrow(X), 4),]
 CLASStrain <- CLASS[-seq(1, length(CLASS), 4)]
 
 #retrieve testing data
-Xtest <- X
-CLASStest <- CLASS
+Xtest <- X[seq(1, nrow(X), 4),]
+CLASStest <- CLASS[seq(1, length(CLASS), 4)]
 ###### END ###################################
 
 #### SETTINGS START ##########################
