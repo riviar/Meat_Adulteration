@@ -15,59 +15,36 @@ test <- dirname(sys.frame(1)$ofile)
 setwd(test)
 
 #load required libraries and scripts
-require(matlab)
 source("pca_eigen.r")
-source("pca_svd.r")
-source("../Toolbox/scalings/auto.r")
-source("../Toolbox/scalings/mncn.r")
-source("../Toolbox/scalings/rangescale.r")
+source("run_pca_basic_scalings.r")
+source("run_pca_sg_snv_combined.r")
+source("../Toolbox/data_reading/load_data_from_file.r")
 ######################
-#static file load for kural format of data: ID/wavelengths/Batch/Class
+### LOAD FTIR DATA ###################
+# name of csv file in format of data: ID/wavelengths/Batch/Class
 fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
-appendName = "VM"
+#name of the data that will appear in result file name
+dataName = "VM"
 #fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
-#appendName = "FTIR"
+#name of the data that will appear in result file name
+#dataName = "FTIR"
 
-DATA <- read.table(fileToLoad, sep = ",", header = TRUE, row.names = 1)
-
-#ignore some columns and load rest to X
-fieldsToIgnore <- c("Batch", "Class")
-X <- DATA[,!(names(DATA) %in% fieldsToIgnore)]
-#######################
-
-#retrieve classes of samples
-CLASS <- DATA$Class
+# load chosen file
+DATA <- load_data_from_file(fileToLoad)
+X <- DATA[[1]]
+CLASS <- DATA[[3]]
 #retrieve names of samples
 samplenames <- row.names(X)
-#wavelengths <- colnames(X)
+###### DATA LOAD END #########################
 
-#some scaling
-Xas <- auto(X)
-Xmncn <- mncn(X)
-Xrs <- rangescale(X)
+###### BASIC PCA #############################
+# runs pca and creates PCA plots for first 3 PCs
+# for raw data, autoscaled data, meancentered data
+# and rangescaled data
+#run_pca_basic_scalings(X, dataName)
 
-##########
-#PCA eigen
-#worse results than in svd
-##########
-#noscale
-pca_eigen(X, samplenames, CLASS, paste(appendName, "noscale", sep="_"))
-#autoscale
-pca_eigen(Xas, samplenames, CLASS, paste(appendName, "autoscale", sep="_"))
-#meancentered
-pca_eigen(Xmncn, samplenames, CLASS, paste(appendName, "meancentered", sep="_"))
-#rangescaled
-pca_eigen(Xrs, samplenames, CLASS, paste(appendName, "rangescale", sep="_"))
-
-##########
-#PCA SVD
-#prcom() function is this version or at least gives the same results
-##########
-#noscale
-pca_svd(X, samplenames, CLASS, paste(appendName, "noscale", sep="_"))
-#autoscale
-pca_svd(Xas, samplenames, CLASS, paste(appendName, "autoscale", sep="_"))
-#meancentered
-pca_svd(Xmncn, samplenames, CLASS, paste(appendName, "meancentered", sep="_"))
-#rangescaled
-pca_svd(Xrs, samplenames, CLASS, paste(appendName, "rangescale", sep="_"))
+####### PCA S-G + SNV ########################
+# runs pca and created PCA plots for first 3 PCs
+# with Savitzky-Golay and Standard Normal Variate
+# combined scalings
+run_pca_sg_snv_combined(X, dataName)

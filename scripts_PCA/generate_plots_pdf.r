@@ -49,7 +49,7 @@ generate_plots_pdf <- function(SCORES,samplenames,CLASS,varvector,filename,annot
     else if (grepl("90%", CLASS[i])) {colorsVector[i] = colors[10]}
     else if (grepl("0%", CLASS[i])) {colorsVector[i] = colors[1]}
     #black color for unknown samples
-    else {colorsVector[i] == "#000000"}
+    else {colorsVector[i] == "#FFF"}
   }
   
   # create pdf for plots
