@@ -19,6 +19,7 @@
 
 run_depot_plsreg <- function(Xtrain, CLASStrain, Xtest, CLASStest, ncomp, outputDir) {
   require(plsdepot)
+  source("calc_RMSEP.r")
 
   #prepare variable for storing plots generated in loop
   #later will be retrieved and saved in single pdf file
@@ -45,10 +46,13 @@ run_depot_plsreg <- function(Xtrain, CLASStrain, Xtest, CLASStest, ncomp, output
     #display how many samples were missclasified overall
     missCount <- length(which(missclassification != 0))
     cat(paste("Missclassification occured ", missCount, " times..\n", sep = ""))
+    #calculate and display RMSEP
+    rmsep <- calc_RMSEP(CLASStest, predictedValues)
+    cat(paste("RMSEP = ", rmsep, "\n", sep = ""))
     
     #create frame for results of test
     #table will take form: ExpectedClass, PredictedClass
-    resultTable <- data.frame(CLASStest, predictedValues, missclassification, missCount)
+    resultTable <- data.frame(CLASStest, predictedValues, missclassification, missCount, rmsep)
     #save results table in csv file
     write.csv(resultTable, file = paste(outputDir, "/Result_", addedFileAppend, "_", componentsNumber_temp, "_components", ".csv", sep="")) 
     
@@ -105,6 +109,9 @@ run_depot_plsreg <- function(Xtrain, CLASStrain, Xtest, CLASStest, ncomp, output
     
     #close plot window
     dev.off()
+    
+    #save errors table
+    write.csv(PLSregr$Q2, file = paste(outputDir, "/Errors_", addedFileAppend, "_", componentsNumber_temp, "_components", ".csv", sep="")) 
     
     
   }
