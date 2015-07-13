@@ -15,25 +15,41 @@ setwd(test)
 #loading libraries and required scripts
 require(plsgenomics)
 require(prospectr)
+source("../Toolbox/data_reading/load_data_from_file.r")
+source("create_variance_table.r")
+source("cut_off_by_variance.r")
 
 ###### LOAD DATA FROM FILE ###################
 # name of csv file in format of data: ID/wavelengths/Batch/Class
-fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
-#fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
+#fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
+#name of the data that will appear in result file name
+#dataName = "VM"
+fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
+#name of the data that will appear in result file name
+dataName = "FTIR"
 
 # load chosen file
-DATA <- read.table(fileToLoad, sep = ",", header = TRUE, row.names = 1)
-# remove data from batch 2
-batch2Indices <- grep("b2", rownames(DATA))
-DATA <- DATA[-batch2Indices,]
+DATA <- load_data_from_file(fileToLoad)
 
-# columns to ignore when extracting wavelength data
-fieldsToIgnore <- c("Batch", "Class")
-# extract wavelength data
-X <- DATA[,!(names(DATA) %in% fieldsToIgnore)]
+#extract wavelengths and classes
+X <- DATA[[1]]
+CLASS <- DATA[[3]]
 
-# extract classes
-CLASS <- DATA$Class
+#VM ONLY
+#remove selected batches
+#batchToRemoveIndices <- grep("b2", rownames(X))
+#X <- X[-batchToRemoveIndices,]
+#CLASS <- CLASS[-batchToRemoveIndices]
+
+#FTIR ONLY
+#reduce spectra number
+#X <- X[-seq(1, nrow(X), 15),]
+#CLASS <- CLASS[-seq(1, nrow(X), 15)]
+#X <- cut_off_by_variance(X, 0.5)
+
+#optionally scale the data
+#Xscaled <- savitzkyGolay(X, m=0, p=3, w=5)
+#X <- standardNormalVariate(Xscaled)
 ###### DATA LOAD END #########################
 
 ###### SETTING TRAINING AND TEST DATA ########
@@ -51,7 +67,7 @@ CLASStest <- CLASS[seq(1, length(CLASS), 4)]
 # number of latent components to use for dimension reduction, vector of values allowed
 componentsNumber <- c(1:40)
 # additional file append - scaling or other, will be added to result file name in form Result_addedFileAppend_rest
-addedFileAppend <- "noscale_VM_0.75"
+addedFileAppend <- "SG_SNV_0.75"
 # create directory for outputs (does nothing if it exists)
 outputDir = "../Results/PLSDA_results"
 dir.create(path = outputDir, showWarnings = FALSE)
@@ -83,5 +99,5 @@ for (componentsNumber_temp in componentsNumber) {
   resultTable <- data.frame(CLASStest, PLSDA$predclass, hitmiss, accuracy)
   
   #save results table in csv file
-  write.csv(resultTable, file = paste(outputDir, "/Result_", addedFileAppend, "_", componentsNumber_temp, "_components", ".csv", sep=""))      
+  write.csv(resultTable, file = paste(outputDir, "/Result_", dataName, "_", addedFileAppend, "_", componentsNumber_temp, "_components", ".csv", sep=""))      
 }
