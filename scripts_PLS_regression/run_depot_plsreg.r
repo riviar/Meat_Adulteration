@@ -98,7 +98,12 @@ run_depot_plsreg <- function(Xtrain, CLASStrain, Xtest, CLASStest, ncomp, output
     
     # create regression scatterplot
     par(mar=c(5.1, 4.1, 4.1, 8.1), xpd=FALSE)
-    plot(CLASStest, predictedValues, col="red", xlab = "Observed", ylab = "Predicted", main = "Regression scatterplot")
+    #find indices of missclassified values (falling outside 10% error region)
+    missclassificationIDs <- which(predictedValues > CLASStrainBorderTop)
+    missclassificationIDs <- c(missclassificationIDs, which(predictedValues < CLASStrainBorderBot))
+    
+    plot(CLASStest[-missclassificationIDs], predictedValues[-missclassificationIDs], col="green", xlab = "Observed", ylab = "Predicted", main = "Regression scatterplot")
+    points(CLASStest[missclassificationIDs], predictedValues[missclassificationIDs], col = "red")
     #add regression line and border lines
     abline(regressionLine)
     abline(upperBorder)

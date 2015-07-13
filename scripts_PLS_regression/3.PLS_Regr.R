@@ -25,16 +25,22 @@ require(prospectr)
 
 ###### LOAD DATA FROM FILE ###################
 # name of csv file in format of data: ID/wavelengths/Batch/Class
-#fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
-fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
+fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
+#fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
 
 # load chosen file
 DATA <- load_file_for_regression(fileToLoad)
 X <- DATA[[1]]
 #optionally scale the data
-#Xscaled <- savitzkyGolay(X, m=0, p=5, w=11)
+#Xscaled <- savitzkyGolay(X, m=0, p=5, w=27)
 #X <- standardNormalVariate(Xscaled)
 CLASS <- DATA[[3]]
+
+#VM ONLY
+#remove selected batches
+#batchToRemoveIndices <- grep("b2", rownames(X))
+#X <- X[-batchToRemoveIndices,]
+#CLASS <- CLASS[-batchToRemoveIndices]
 ###### DATA LOAD END #########################
 
 ###### SETTING TRAINING AND TEST DATA ########
@@ -53,7 +59,7 @@ CLASStest <- CLASS[seq(1, nrow(X), 4)]
 componentsNumber <- c(1:40)
 # additional file append - scaling or other, will be added to result file name in form Result_addedFileAppend_rest
 #addedFileAppend <- "FTIR_SG_SNV_0.75"
-addedFileAppend <- "FTIR_noscale_0.75"
+addedFileAppend <- "VM_noscale_0.75"
 # create directory for outputs (does nothing if it exists)
 outputDir = "../Results/PLSREGR_results"
 dir.create(path = outputDir, showWarnings = FALSE)
