@@ -6,13 +6,14 @@
 # Xtest - testing set
 # CLASStrain - training set classes
 # numberOfNeighboursVector - vector with number of neighbours to consider
-# resultDirectory - path to directory where results will be saved
-# appendText - text to append to result files
+# outputDir - path to directory where results will be saved
+# addedFileAppend - text to append to result files
 #
 # Rafal Kural
 ######################################
 
-run_knn <- function(Xtrain, Xtest, CLASStrain, numberOfNeighboursVector, resultDirectory, appendText) {
+run_knn <- function(Xtrain, Xtest, CLASStrain, numberOfNeighboursVector, outputDir, addedFileAppend) {
+  require(class)
   for (numberOfNeighbours in numberOfNeighboursVector) {
     cat(paste("Running for ", numberOfNeighbours, " neighbours..\n", sep = ""))
     model <- knn(train = Xtrain, test = Xtest, cl = CLASStrain, k = numberOfNeighbours)
@@ -36,6 +37,6 @@ run_knn <- function(Xtrain, Xtest, CLASStrain, numberOfNeighboursVector, resultD
     resultTable <- data.frame(CLASStest, model, hitmiss, accuracy)
     
     #save results table in csv file
-    write.csv(resultTable, file = paste(resultDirectory, "/Result_", appendText, "_K", numberOfNeighbours, ".csv", sep=""))  
+    write.csv(resultTable, file = paste(outputDir, "/Result_", addedFileAppend, "_K", numberOfNeighbours, ".csv", sep=""))  
   }
 }

@@ -14,17 +14,14 @@ setwd(test)
 
 #loading libraries and required scripts
 require(class)
+require(pls)
 source("../Toolbox/data_reading/load_data_from_file.r")
 source("run_knn.r")
 
 ###### LOAD DATA FROM FILE ###################
 # name of csv file in format of data: ID/wavelengths/Batch/Class
-fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
-#name of the data that will appear in result file name
-dataName = "VM"
-#fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
-#name of the data that will appear in result file name
-#dataName = "FTIR"
+#fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
+fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
 
 # load chosen file
 DATA <- load_data_from_file(fileToLoad)
@@ -45,8 +42,9 @@ CLASS <- DATA[[3]]
 #X <- cut_off_by_variance(X, 0.5)
 
 #optionally scale the data
-#Xscaled <- savitzkyGolay(X, m=0, p=4, w=5)
+Xscaled <- savitzkyGolay(X, m=0, p=3, w=27)
 #X <- standardNormalVariate(Xscaled)
+X <- msc(Xscaled)
 ###### DATA LOAD END #########################
 
 ###### SETTING TRAINING AND TEST DATA ########
@@ -63,7 +61,7 @@ CLASStest <- CLASS[seq(1, length(CLASS), 4)]
 #number of neighbours considered by algorithm
 numberOfNeighboursVector <- c(2,3,4,5,6,7)
 # additional file append - scaling or other, will be added to result file name in form Result_addedFileAppend_rest
-addedFileAppend <- paste(dataName, "_SG_SNV_0.75", sep = "")
+addedFileAppend <- "FTIR_SG_MSC_0.75"
 # create directory for outputs (does nothing if it exists)
 outputDir = "../Results/KNN_results"
 dir.create(path = outputDir, showWarnings = FALSE)
@@ -72,4 +70,4 @@ dir.create(path = outputDir, showWarnings = FALSE)
 #run knn for all elements in numberOfNeighboursVector
 run_knn(Xtrain = Xtrain, Xtest = Xtest, CLASStrain = CLASStrain, 
         numberOfNeighboursVector = numberOfNeighboursVector, 
-        resultDirectory = outputDir, appendText = addedFileAppend)
+        outputDir = outputDir, addedFileAppend = addedFileAppend)
