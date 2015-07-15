@@ -19,15 +19,16 @@ source("pca_eigen.r")
 source("run_pca_basic_scalings.r")
 source("run_pca_sg_snv_combined.r")
 source("../Toolbox/data_reading/load_data_from_file.r")
+source("run_pca_sg_msc_combined.r")
 ######################
 ### LOAD FTIR DATA ###################
 # name of csv file in format of data: ID/wavelengths/Batch/Class
-fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
+#fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
 #name of the data that will appear in result file name
-dataName = "VM"
-#fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
+#dataName = "VM"
+fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
 #name of the data that will appear in result file name
-#dataName = "FTIR"
+dataName = "FTIR"
 
 # load chosen file
 DATA <- load_data_from_file(fileToLoad)
@@ -47,4 +48,10 @@ samplenames <- row.names(X)
 # runs pca and created PCA plots for first 3 PCs
 # with Savitzky-Golay and Standard Normal Variate
 # combined scalings
-run_pca_sg_snv_combined(X, dataName)
+#run_pca_sg_snv_combined(X, dataName)
+
+####### PCA S-G + MSC ########################
+# runs pca and created PCA plots for first 3 PCs
+# with Savitzky-Golay and Multivariate Scatter Correction
+# combined scalings
+run_pca_sg_msc_combined(X, dataName)
