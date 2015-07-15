@@ -37,25 +37,64 @@ run_depot_plsreg <- function(Xtrain, CLASStrain, Xtest, CLASStest, ncomp, output
     regressionIntercept <- PLSregr$reg.coefs[1]
     predictedValues <- as.matrix(Xtest) %*% regressionCoefficients + regressionIntercept
     
-    #round predicted to nearest decimal number
-    #further improvements would include: separate criteria for each range of values
-    #some would give better results when floor'red, some when ceiling'ed, and most would need more complicated means of classification
-    predictedValuesRounded <- round(predictedValues, -1)
-    #create missclasification value vector (by how many % did prediction miss its class)
-    missclassification <- predictedValuesRounded - CLASStest
-    #display how many samples were missclasified overall
-    missCount <- length(which(missclassification != 0))
-    cat(paste("Missclassification occured ", missCount, " times..\n", sep = ""))
     #calculate and display RMSEP
     rmsep <- calc_RMSEP(CLASStest, predictedValues)
     cat(paste("RMSEP = ", rmsep, "\n", sep = ""))
+
+    ############ SCATTERPLOT #################
+    #generate plot of observed vs predicted values
+    #prepare central line + 2 borders
+    # copying class vector as lm does strange things if both arguments use it, no problems with copied one
+    # create vector of all classes
+    classVector <- unique(CLASStest)
+    centralLineHelpVector <- classVector # I will never understand R
+    centralLine <- lm(classVector ~ centralLineHelpVector)
+    borderTop <- classVector + 10
+    borderBot <- classVector - 10
+    upperBorderLine <- lm(classVector ~ borderTop)
+    bottomBorderLine <- lm(classVector ~ borderBot)
+    
+    # R tries to open and close window for plots every time
+    #it significantly slows down the script
+    
+    # create regression scatterplot
+    par(mar=c(5.1, 4.1, 4.1, 8.1), xpd=FALSE)
+    #find indices of missclassified values (falling outside 10% error region)
+    # create border values vectors for CLASStest
+    CLASStrainBorderTop <- CLASStest + 10
+    CLASStrainBorderBot <- CLASStest - 10
+    missclassificationIDs <- which(predictedValues > CLASStrainBorderTop)
+    missclassificationIDs <- c(missclassificationIDs, which(predictedValues < CLASStrainBorderBot))
+    
+    plot(CLASStest[-missclassificationIDs], predictedValues[-missclassificationIDs], 
+         xlim = c(min(CLASStest), max(CLASStest)), ylim = c(min(predictedValues), max(predictedValues)), 
+         col="green", xlab = "Observed", ylab = "Predicted", main = "Regression scatterplot")
+    points(CLASStest[missclassificationIDs], predictedValues[missclassificationIDs], col = "red")
+    #add regression line and border lines
+    abline(centralLine)
+    abline(upperBorderLine)
+    abline(bottomBorderLine)
+    
+    #save plot for later use
+    savedPlots[[componentsNumber_temp]] <- recordPlot()
+    
+    #close plot window
+    dev.off()
+    
+    ################## CLASSIFICATION DATA TABLE #########################
+    #create missclasification value vector (by how many % did prediction miss its class)
+    missclassification <- predictedValues - CLASStest
+    #calculate and display prediction accuracy (prediction is a 'hit' if within +/-10%)
+    accuracy <- ((nrow(Xtest) - length(missclassificationIDs)) / nrow(Xtest)) * 100
+    cat(paste("Accuracy: ", accuracy, "\n", sep = ""))
     
     #create frame for results of test
-    #table will take form: ExpectedClass, PredictedClass
-    resultTable <- data.frame(CLASStest, predictedValues, missclassification, missCount, rmsep)
+    #table will take form: ExpectedClass, PredictedClass, missclassification value, rmsep, accuracy
+    resultTable <- data.frame(CLASStest, predictedValues, missclassification, rmsep, accuracy)
     #save results table in csv file
     write.csv(resultTable, file = paste(outputDir, "/Result_", addedFileAppend, "_", componentsNumber_temp, "_components", ".csv", sep="")) 
     
+    ################# CLASS RANGES DATA TABLE ############################
     #retrieve sample ids by classes
     id00 <- which(CLASStest == 0)
     id10 <- which(CLASStest == 10)
@@ -72,49 +111,19 @@ run_depot_plsreg <- function(Xtrain, CLASStrain, Xtest, CLASStest, ncomp, output
     id <- list(id00, id10, id20, id30, id40, id50, id60, id70, id80, id90, id100)
     
     # retrieve min and max predicted values for each class
-    classGrade <- as.vector(c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100))
-    classMin <- rep(0, length(classGrade))
-    classMax <- rep(0, length(classGrade))
-    for (i in 1:length(classGrade)) {
+    classMin <- rep(0, length(classVector))
+    classMax <- rep(0, length(classVector))
+    for (i in 1:length(classVector)) {
       classMin[i] <- min(predictedValues[id[[i]]])
       classMax[i] <- max(predictedValues[id[[i]]])
     }
     
     # generate data table
-    rangeTable <- data.frame(classGrade, classMin, classMax)
+    rangeTable <- data.frame(classVector, classMin, classMax)
     # save data table as csv file
     write.csv(rangeTable, file = paste(outputDir, "/Class_Ranges_", addedFileAppend, "_", componentsNumber_temp, "_components", ".csv", sep="")) 
     
-    #generate plot of observed vs predicted values
-    #prepare regression line + 2 borders
-    regressionLine <- lm(CLASStest ~ predictedValues)
-    CLASStrainBorderTop <- CLASStest + 10
-    CLASStrainBorderBot <- CLASStest - 10
-    upperBorder <- lm(CLASStrainBorderTop ~ predictedValues)
-    bottomBorder <- lm(CLASStrainBorderBot ~ predictedValues)
-    
-    # R tries to open and close window for plots every time
-    #it significantly slows down the script
-    
-    # create regression scatterplot
-    par(mar=c(5.1, 4.1, 4.1, 8.1), xpd=FALSE)
-    #find indices of missclassified values (falling outside 10% error region)
-    missclassificationIDs <- which(predictedValues > CLASStrainBorderTop)
-    missclassificationIDs <- c(missclassificationIDs, which(predictedValues < CLASStrainBorderBot))
-    
-    plot(CLASStest[-missclassificationIDs], predictedValues[-missclassificationIDs], col="green", xlab = "Observed", ylab = "Predicted", main = "Regression scatterplot")
-    points(CLASStest[missclassificationIDs], predictedValues[missclassificationIDs], col = "red")
-    #add regression line and border lines
-    abline(regressionLine)
-    abline(upperBorder)
-    abline(bottomBorder)
-    
-    #save plot for later use
-    savedPlots[[componentsNumber_temp]] <- recordPlot()
-    
-    #close plot window
-    dev.off()
-    
+    ################### ERRORS DATA TABLE ###########################
     #save errors table
     write.csv(PLSregr$Q2, file = paste(outputDir, "/Errors_", addedFileAppend, "_", componentsNumber_temp, "_components", ".csv", sep="")) 
     
