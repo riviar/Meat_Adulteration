@@ -29,12 +29,12 @@ FTIRDataFile <- "../../Data/FTIR_batch4_kural_format.csv"
 splitRatio <- 0.75
 
 # vector with numbers of latent variables (PLS-DA)
-ncomp <- 10:36
+ncomp <- 4:36
 # max number of components to use (PLS-R)
 maxncomp <- 36
 
 # number of iterations to repeat test
-iterations <- 10
+iterations <- 100
 
 resultsDirectory = "../Results/Performance_Results"
 ######## END Performance test settings #########
@@ -58,24 +58,40 @@ CLASS_FTIR <- DATA[[3]]
 
 ######## PLS-DA performance test ###############
 PLSDA_VM_scores <- PLSDA_performance(X_VM, CLASS_VM, splitRatio, ncomp, iterations)
+write.csv(file = paste(resultsDirectory, "/PLSDA_VM_scores.csv", sep = ""), x = PLSDA_VM_scores)
+
 PLSDA_FTIR_scores <- PLSDA_performance(X_FTIR, CLASS_FTIR, splitRatio, ncomp, iterations)
+write.csv(file = paste(resultsDirectory, "/PLSDA_FTIR_scores.csv", sep = ""), x = PLSDA_FTIR_scores)
 ######## END PLS-DA performance test ###########
 
 ######## PLS regression performance test #######
 PLSR_VM_scores <- PLSR_performance(X_VM, CLASS_VM, splitRatio, maxncomp, iterations)
+write.csv(file = paste(resultsDirectory, "/PLSR_VM_scores.csv", sep = ""), x = PLSR_VM_scores)
+
 PLSR_FTIR_scores <- PLSR_performance(X_FTIR, CLASS_FTIR, splitRatio, maxncomp, iterations)
+write.csv(file = paste(resultsDirectory, "/PLSR_FTIR_scores.csv", sep = ""), x = PLSR_FTIR_scores)
 ######## END PLS regression performance test ###
 
 ######## SVM performance test ##################
 SVM_Radial_VM_scores <- SVM_performance(X_VM, CLASS_VM, splitRatio, "radial", iterations)
+write.csv(file = paste(resultsDirectory, "/SVM_Radial_VM_scores.csv", sep = ""), x = SVM_Radial_VM_scores)
+
 SVM_Radial_FTIR_scores <- SVM_performance(X_FTIR, CLASS_FTIR, splitRatio, "radial", iterations)
+write.csv(file = paste(resultsDirectory, "/SVM_Radial_FTIR_scores.csv", sep = ""), x = SVM_Radial_FTIR_scores)
+
 SVM_Polynomial_VM_scores <- SVM_performance(X_VM, CLASS_VM, splitRatio, "polynomial", iterations)
+write.csv(file = paste(resultsDirectory, "/SVM_Polynomial_VM_scores.csv", sep = ""), x = SVM_Polynomial_VM_scores)
+
 SVM_Polynomial_FTIR_scores <- SVM_performance(X_FTIR, CLASS_FTIR, splitRatio, "polynomial", iterations)
+write.csv(file = paste(resultsDirectory, "/SVM_Polynomial_FTIR_scores.csv", sep = ""), x = SVM_Polynomial_FTIR_scores)
 ######## END SVM performance test ##############
 
 ######## RF performance test ###################
 RF_VM_scores <- RF_performance(X_VM, CLASS_VM, splitRatio, iterations)
+write.csv(file = paste(resultsDirectory, "/RF_VM_scores.csv", sep = ""), x = RF_VM_scores)
+
 RF_FTIR_scores <- RF_performance(X_FTIR, CLASS_FTIR, splitRatio, iterations)
+write.csv(file = paste(resultsDirectory, "/RF_FTIR_scores.csv", sep = ""), x = RF_FTIR_scores)
 ######## END RF performance test ###############
 
 ######## Plot results of test and save in pdf file ##
