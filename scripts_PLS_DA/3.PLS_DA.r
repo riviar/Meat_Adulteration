@@ -73,6 +73,9 @@ outputDir = "../Results/PLSDA_results"
 dir.create(path = outputDir, showWarnings = FALSE)
 #### SETTINGS END ############################
 
+#save accuracy scores across all ncomps
+accuracyScores <- rep(0, length(componentsNumber))
+
 for (componentsNumber_temp in componentsNumber) {
   #Display analysis status
   cat(paste("Processing data for componentNumber: ", componentsNumber_temp, "..\n", sep=""))
@@ -90,6 +93,7 @@ for (componentsNumber_temp in componentsNumber) {
   
   #calculate accuracy
   accuracy <- sum(as.numeric(hitmiss))/length(hitmiss)
+  accuracyScores[componentsNumber_temp] <- accuracy*100
   
   #display accuracy
   cat(paste(accuracy, "\n",sep = ""))
