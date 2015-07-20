@@ -23,6 +23,9 @@ PLSR_performance <- function(X, CLASS, ratio, maxncomp, iterations) {
   
   for(i in 1:iterations) {
     
+    # print current iteration
+    cat(paste("PLS-R iteration: ", i, "..\n", sep = ""))
+    
     # split data into training and test sets
     randomizedSets <- pick_random_sets(X = X, CLASS = CLASS, ratio = ratio)
     Xtrain = randomizedSets$Xtrain
