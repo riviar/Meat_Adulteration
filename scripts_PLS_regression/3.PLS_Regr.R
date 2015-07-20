@@ -20,7 +20,7 @@ setwd(test)
 require(plsdepot)
 require(pls)
 source("generate_loading_plot_pdf.r")
-source("../Toolbox/data_reading/load_file_for_regression.r")
+source("../Toolbox/data_manipulation/load_file_for_regression.r")
 source("run_depot_plsreg.r")
 require(prospectr)
 

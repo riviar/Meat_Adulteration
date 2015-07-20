@@ -18,7 +18,7 @@ setwd(test)
 source("pca_eigen.r")
 source("run_pca_basic_scalings.r")
 source("run_pca_sg_snv_combined.r")
-source("../Toolbox/data_reading/load_data_from_file.r")
+source("../Toolbox/data_manipulation/load_data_from_file.r")
 source("run_pca_sg_msc_combined.r")
 ######################
 ### LOAD FTIR DATA ###################

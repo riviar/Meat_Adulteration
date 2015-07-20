@@ -15,7 +15,7 @@ setwd(test)
 #loading libraries and required scripts
 require(plsgenomics)
 require(prospectr)
-source("../Toolbox/data_reading/load_data_from_file.r")
+source("../Toolbox/data_manipulation/load_data_from_file.r")
 source("create_variance_table.r")
 source("cut_off_by_variance.r")
 

@@ -15,7 +15,7 @@ test <- dirname(sys.frame(1)$ofile)
 setwd(test)
 
 #load neccessary packages and scripts
-source("../Toolbox/data_reading/load_file_for_regression.r")
+source("../Toolbox/data_manipulation/load_file_for_regression.r")
 source("lwlr.r")
 
 ###### LOAD DATA FROM FILE ###################

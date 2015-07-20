@@ -15,7 +15,7 @@ setwd(test)
 #loading libraries and required scripts
 require(randomForest)
 require(pls)
-source("../Toolbox/data_reading/load_file_for_regression.r")
+source("../Toolbox/data_manipulation/load_file_for_regression.r")
 source("run_rf.r")
 
 ###### LOAD DATA FROM FILE ###################
@@ -59,7 +59,7 @@ CLASStest <- CLASS[seq(1, length(CLASS), 4)]
 
 #### SETTINGS START ##########################
 #vector with number of trees to use in algorithm
-ntrees = c(50, 100, 200, 300, 400, 500, 750, 1000, 1500)
+ntrees = c(50, 100, 200, 300, 400)
 # additional file append - scaling or other, will be added to result file name in form Result_addedFileAppend_rest
 addedFileAppend <- "FTIR_SG_MSC_0.75"
 # create directory for outputs (does nothing if it exists)

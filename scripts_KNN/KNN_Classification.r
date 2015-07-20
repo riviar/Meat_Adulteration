@@ -15,7 +15,7 @@ setwd(test)
 #loading libraries and required scripts
 require(class)
 require(pls)
-source("../Toolbox/data_reading/load_data_from_file.r")
+source("../Toolbox/data_manipulation/load_data_from_file.r")
 source("run_knn.r")
 
 ###### LOAD DATA FROM FILE ###################
