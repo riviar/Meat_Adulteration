@@ -4,6 +4,13 @@
 #                                            #
 # Rafal Kural                                #
 ##############################################
+
+##############################################
+#
+# OLD, NEEDS A LOT OF REFACTORING
+#
+##############################################
+
 # clear workspace and open windows
 rm(list = ls())
 graphics.off()

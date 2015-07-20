@@ -3,6 +3,13 @@
 #                                            #
 # Rafal Kural                                #
 ##############################################
+
+##############################################
+#
+# OLD, NEEDS REFACTORING
+#
+##############################################
+
 # clear workspace and open windows
 rm(list = ls())
 graphics.off()
