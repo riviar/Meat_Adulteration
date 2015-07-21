@@ -20,6 +20,7 @@ source("PLSDA_performance.r")
 source("PLSR_performance.r")
 source("SVM_performance.r")
 source("RF_performance.r")
+source("generate_performance_plot.r")
 
 ######## Performance test settings ############
 VMDataFile <- "../../Data/Videometer_allbatches_kural_format.csv"
@@ -98,31 +99,15 @@ write.csv(file = paste(resultsDirectory, "/RF_FTIR_scores.csv", sep = ""), x = R
 # create results directory if not exists
 dir.create(path = resultsDirectory, showWarnings = FALSE)
 
-# create pdf file
-pdf(paste(resultsDirectory, "/Performance_Plot.pdf", sep = ""))
-
+# destination file
+exp2_VM_FTIR_filename <- paste(resultsDirectory, "/Performance_Plot_Experiment2_VM_FTIR.pdf", sep = "")
+# merge data 
+exp2_VM_FTIR_data <- matrix(PLSDA_VM_scores, nrow=1)
+exp2_VM_FTIR_data <- rbind(exp2_VM_FTIR_data, PLSDA_FTIR_scores, PLSR_VM_scores, PLSR_FTIR_scores,
+                      SVM_Radial_VM_scores, SVM_Radial_FTIR_scores, SVM_Polynomial_VM_scores, 
+                      SVM_Polynomial_FTIR_scores, RF_VM_scores, RF_FTIR_scores)
+# create vector with names for data
+exp2_VM_FTIR_names <- c("PLS-DA VM", "PLS-DA FTIR", "PLS-R VM", "PLS-R FTIR", "SVM Radial VM",
+                        "SVM Radial FTIR", "SVM Polynomial VM", "SVM Polynomial FTIR", "RF VM", "RF FTIR")
 # draw plot
-par(mar=c(5.1, 4.1, 4.1, 8.1), xpd=TRUE)
-plot(c(0, iterations), c(0, 100), xlab = "Iterations", 
-     ylab = "Accuracy", main = "Models Performance", type = "n")
-axis(side=2, at=seq(0, 100, by=10))
-# plot results of tests
-lines(1:iterations, PLSDA_VM_scores*100, col = "red")
-lines(1:iterations, PLSDA_FTIR_scores*100, col = "violet")
-lines(1:iterations, PLSR_VM_scores*100, col = "blue")
-lines(1:iterations, PLSR_FTIR_scores*100, col = "black")
-lines(1:iterations, PLSDA_VM_scores*100, col = "darkgoldenrod4")
-lines(1:iterations, PLSDA_FTIR_scores*100, col = "brown1")
-lines(1:iterations, PLSR_VM_scores*100, col = "brown4")
-lines(1:iterations, PLSR_FTIR_scores*100, col = "darkorange")
-lines(1:iterations, RF_VM_scores*100, col = "deeppink")
-lines(1:iterations, RF_FTIR_scores*100, col = "deepskyblue2")
-
-legendNames <- c("PLS-DA VM", "PLS-DA FTIR", "PLS-R VM", "PLS-R FTIR", "SVM Radial VM", 
-                 "SVM Radial FTIR", "SVM Polynomial VM", "SVM Polynomial FTIR", "RF VM", "RF FTIR")
-legendColors <- c("red", "violet", "blue", "black", "darkgoldenrod4", "brown1", "brown4", "darkorange",
-                  "deeppink", "deepskyblue2")
-
-legend("topright", inset=c(-0.32,0), legendNames, lty=c(1), col=legendColors, cex = 0.8)
-
-dev.off()
+generate_performance_plot(data = exp2_VM_FTIR_data, names = exp2_VM_FTIR_names, file = exp2_VM_FTIR_filename)
