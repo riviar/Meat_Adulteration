@@ -7,8 +7,12 @@
 rm(list = ls())
 graphics.off()
 
+#set working directory to script directory
+test <- dirname(sys.frame(1)$ofile)
+setwd(test)
+
 #load files with data to format
-filesToLoad = c("../../Data/batch1.csv", "../../Data/batch2.csv", "../../Data/batch3.csv", "../../Data/batch4.csv")
+filesToLoad = c("../../../Data/batch1.csv", "../../../Data/batch2.csv", "../../../Data/batch3.csv", "../../../Data/batch4.csv")
 
 #initialize list of data (1 element per file)
 Data <- list(rep(-1, length(filesToLoad)))
@@ -23,6 +27,10 @@ DataReconstructed <- Data[[1]]
 for (i in 2:length(Data)) {
   DataReconstructed = rbind(DataReconstructed, Data[[i]])
 }
+
+# find indices of samples signed test and remove them - callibration error
+errorIDs <- grep("test", DataReconstructed$Sample.ID)
+DataReconstructed <- DataReconstructed[-errorIDs,]
 
 #add and fill new batch and class columns to dataframe
 DataReconstructed$Batch[1] = 1
@@ -51,4 +59,4 @@ for (i in 1:nrow(DataReconstructed)){
 }
 
 #save new data frame to csv file
-write.csv(DataReconstructed, file = "../../Data/Videometer_allbatches_kural_format.csv", row.names = FALSE)
+write.csv(DataReconstructed, file = "../../../Data/Videometer_allbatches_kural_format_errors_removed.csv", row.names = FALSE)
