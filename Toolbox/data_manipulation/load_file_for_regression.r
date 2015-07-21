@@ -43,5 +43,5 @@ load_file_for_regression <- function(filepath) {
   # change data type to numeric
   CLASS <- as.numeric(CLASS)
   
-  return(list(X, BATCH, CLASS))
+  return(list(X = X, BATCH = BATCH, CLASS = CLASS))
 }

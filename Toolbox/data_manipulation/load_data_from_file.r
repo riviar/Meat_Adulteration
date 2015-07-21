@@ -29,5 +29,5 @@ load_data_from_file <- function(filepath) {
   # extract classes (need numerical values only)
   CLASS <- as.vector(DATA$Class)
   
-  return(list(X, BATCH, CLASS))
+  return(list(X = X, BATCH = BATCH, CLASS = CLASS))
 }
