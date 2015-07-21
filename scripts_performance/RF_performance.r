@@ -14,7 +14,7 @@
 #####################################################
 
 RF_performance <- function(X, CLASS, ratio, iterations) {
-  require(plsdepot)
+  require(randomForest)
   source("../Toolbox/data_manipulation/pick_random_sets.r")
   
   # initialize accuracy scores vector
