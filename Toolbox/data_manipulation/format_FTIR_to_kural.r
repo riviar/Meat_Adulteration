@@ -7,11 +7,20 @@
 rm(list = ls())
 graphics.off()
 
+#set working directory to script directory
+test <- dirname(sys.frame(1)$ofile)
+setwd(test)
+
 #load file with data to format
-fileToLoad = c("../../Data/FTIR_Batch4_2_Kural_mod.csv")
+fileToLoad = c("../../../Data/FTIR_Batch4_2.csv")
 
 #read data from file 
 Data <- read.table(fileToLoad, sep = ",", header = TRUE)
+
+# find indices of samples signed "f" and "g" and remove them - callibration error
+errorIDs <- c((grep("\\d{2}f", Data$wavelenghts)), 
+              (grep("\\d{2}g", Data$wavelenghts)))
+Data <- Data[-errorIDs,]
 
 #add and fill new batch and class columns to dataframe
 Data$Batch[1] = 1
@@ -40,4 +49,4 @@ for (i in 1:nrow(Data)){
 }
 
 #save new data frame to csv file
-write.csv(Data, file = "../../Data/FTIR_batch4_kural_format.csv", row.names = FALSE)
+write.csv(Data, file = "../../../Data/FTIR_batch4_kural_format_errors_removed.csv", row.names = FALSE)
