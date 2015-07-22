@@ -9,13 +9,20 @@
 # ratio - ratio of how to split training/test sets
 # ncomp - vector containing number of components to use in PLS-DA
 # iterations - how many times should test be repeated
+# allowProximity - TRUE to treat predicting adjecent class as a hit, 
+# FALSE - only perfect hits count, default FALSE
 #
 # Rafal Kural
 #####################################################
 
-PLSDA_performance <- function(X, CLASS, ratio, ncomp, iterations) {
+PLSDA_performance <- function(X, CLASS, ratio, ncomp, iterations, allowProximity) {
   require(plsgenomics)
   source("../Toolbox/data_manipulation/pick_random_sets.r")
+  
+  # set allowProximity to FALSE if missing
+  if (missing(allowProximity)) {
+    allowProximity <- FALSE
+  }
   
   # initialize accuracy scores vector
   accuracyScores <- 0
@@ -39,11 +46,14 @@ PLSDA_performance <- function(X, CLASS, ratio, ncomp, iterations) {
     bottomSuccessCLASS <- CLASStest - 10
     
     # count how many samples were predicted correctly
-    #hitCount <- length(which((as.vector(model$predclass) >= bottomSuccessCLASS) & 
-    #                    (as.vector(model$predclass) <= upperSuccessCLASS)))
-    hitCount <- length(which((as.vector(model$predclass) == bottomSuccessCLASS))) + 
-      length(which((as.vector(model$predclass) == upperSuccessCLASS))) + 
-      length(which((as.vector(model$predclass) == CLASStest))) 
+    if (allowProximity) {
+      hitCount <- length(which((as.vector(model$predclass) == bottomSuccessCLASS))) + 
+        length(which((as.vector(model$predclass) == upperSuccessCLASS))) + 
+        length(which((as.vector(model$predclass) == CLASStest))) 
+    }
+    if (allowProximity == FALSE) {
+      hitCount <- length(which((as.vector(model$predclass) == CLASStest)))
+    }
     
     # calculate accuracy percentage and round to 2 decimal places
     accuracy <- round((hitCount/length(CLASStest)), 2)

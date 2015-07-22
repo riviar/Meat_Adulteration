@@ -9,13 +9,20 @@
 # ratio - ratio of how to split training/test sets
 # kernel - type of kernel to use in SVM (polynomial or radial)
 # iterations - how many times should test be repeated
+# allowProximity - TRUE to treat predicting adjecent class as a hit, 
+# FALSE - only perfect hits count, default FALSE
 #
 # Rafal Kural
 #####################################################
 
-SVM_performance <- function(X, CLASS, ratio, kernel, iterations) {
+SVM_performance <- function(X, CLASS, ratio, kernel, iterations, allowProximity) {
   require(e1071)
   source("../Toolbox/data_manipulation/pick_random_sets.r")
+  
+  # set allowProximity to FALSE if missing
+  if (missing(allowProximity)) {
+    allowProximity <- FALSE
+  }
   
   # initialize accuracy scores vector
   accuracyScores <- 0
@@ -41,11 +48,14 @@ SVM_performance <- function(X, CLASS, ratio, kernel, iterations) {
     bottomSuccessCLASS <- CLASStest - 10
     
     # count how many samples were predicted correctly
-    #hitCount <- length(which((as.vector(model$predclass) >= bottomSuccessCLASS) & 
-    #                    (as.vector(model$predclass) <= upperSuccessCLASS)))
-    hitCount <- length(which((as.vector(predictedValues) == bottomSuccessCLASS))) + 
-      length(which((as.vector(predictedValues) == upperSuccessCLASS))) + 
-      length(which((as.vector(predictedValues) == CLASStest))) 
+    if (allowProximity) {
+      hitCount <- length(which((as.vector(model$predclass) == bottomSuccessCLASS))) + 
+        length(which((as.vector(model$predclass) == upperSuccessCLASS))) + 
+        length(which((as.vector(model$predclass) == CLASStest))) 
+    }
+    if (allowProximity == FALSE) {
+      hitCount <- length(which((as.vector(model$predclass) == CLASStest)))
+    }
     
     # calculate accuracy percentage and round to 2 decimal places
     accuracy <- round((hitCount/length(CLASStest)), 2)
