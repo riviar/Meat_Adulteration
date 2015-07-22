@@ -9,11 +9,12 @@
 # CLASS - vector of samples classes
 # ratio - ratio of how to split training/test sets
 # iterations - how many times should test be repeated
+# allowedDeviation - by how much can score deviate from observed value to count as hit
 #
 # Rafal Kural
 #####################################################
 
-RF_performance <- function(X, CLASS, ratio, iterations) {
+RF_performance <- function(X, CLASS, ratio, iterations, allowedDeviation) {
   require(randomForest)
   source("../Toolbox/data_manipulation/pick_random_sets.r")
   
@@ -42,9 +43,9 @@ RF_performance <- function(X, CLASS, ratio, iterations) {
     # extract predicted values
     predictedValues <- model$test$predicted
     
-    # vectors creating boundary of "successfull" classification (+/- 10% of observed)
-    upperSuccessCLASS <- CLASStest + 10
-    bottomSuccessCLASS <- CLASStest - 10
+    # vectors creating boundary of "successfull" classification
+    upperSuccessCLASS <- CLASStest + allowedDeviation
+    bottomSuccessCLASS <- CLASStest - allowedDeviation
     
     # count how many samples were predicted correctly
     #hitCount <- length(which((as.vector(model$predclass) >= bottomSuccessCLASS) & 
