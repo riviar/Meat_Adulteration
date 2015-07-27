@@ -51,9 +51,18 @@ pick_random_sets <- function(X, CLASS, ratio) {
     # But I cut this loop code to 1/10nth
       # pick class from which a random sample will be selected
       targetClass <- (i %% (length(classTypes))) + 1
-      
-      # select random ID from target class list
-      randomID <- round(runif(1, 1, nrow(Xlist[[targetClass]])))
+      #ensure that doesn't try to retrieve from already empty class
+      counter = i
+      while(TRUE) {
+        # select random ID from target class list
+        randomID <- round(runif(1, 1, nrow(Xlist[[targetClass]])))
+        if (!(is.nan(randomID))) {
+          break
+        }
+        # try to pick from next class
+        targetClass <- (counter %% (length(classTypes))) + 1
+        counter = counter + 1
+      }
       
       # push sample of chosen ID to training set
       Xtrain <- rbind(Xtrain, Xlist[[targetClass]][randomID,])
@@ -70,6 +79,10 @@ pick_random_sets <- function(X, CLASS, ratio) {
   CLASStest = NULL
   for(i in 1:length(classTypes)) {
     for(j in 1:nrow(Xlist[[i]])) {
+      # do not try to append if class is empty
+      if(is.na(Xlist[[i]][j,1])) {
+        break
+      }
       Xtest <- rbind(Xtest, Xlist[[i]][j,])
       CLASStest <- c(CLASStest, classTypes[i])
     }
