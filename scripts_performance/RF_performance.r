@@ -20,6 +20,7 @@ RF_performance <- function(X, CLASS, ratio, iterations, allowedDeviation) {
   
   # initialize accuracy scores vector
   accuracyScores <- 0
+  accuracyScoresMeans <- 0
   
   for(i in 1:iterations) {
     
@@ -64,17 +65,14 @@ RF_performance <- function(X, CLASS, ratio, iterations, allowedDeviation) {
     }
     
     # calculate accuracy percentage and round to 2 decimal places
-    accuracy <- round((hitCount/length(CLASStest)), 2)
+    accuracy <- round((hitCount/length(CLASStest)), 4)
     
-    # simply push accuracy to scores vector if it is first iteration
-    if (i == 1) {
-      accuracyScores[i] = accuracy
-    } else {
-      # calculate mean of all accuracy scores up to now and push it to scores vector
-      accuracyScores[i] = round(((sum(accuracyScores) + accuracy) / (length(accuracyScores) + 1)), 2)
-    }
+    # simply push accuracy to scores vector
+    accuracyScores[i] = accuracy
+    # calculate mean of all accuracy scores up to now and push it to scores mean vector
+    accuracyScoresMeans[i] = round((sum(accuracyScores) / length(accuracyScores)), 4)
   }
   
   # return vector of accuracy scores
-  return(accuracyScores)
+  return(accuracyScoresMeans)
 }

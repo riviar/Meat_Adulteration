@@ -26,6 +26,7 @@ PLSDA_performance <- function(X, CLASS, ratio, ncomp, iterations, allowProximity
   
   # initialize accuracy scores vector
   accuracyScores <- 0
+  accuracyScoresMeans <- 0
   
   for(i in 1:iterations) {
   
@@ -39,14 +40,16 @@ PLSDA_performance <- function(X, CLASS, ratio, ncomp, iterations, allowProximity
     Xtest = randomizedSets$Xtest
     CLASStest = randomizedSets$CLASStest
     
+    cat("Started generating mode..\n")
     model <- pls.lda(Xtrain = Xtrain, Ytrain = CLASStrain, Xtest = Xtest, ncomp = ncomp ,nruncv = 40)
-    
-    # vectors creating boundary of "successfull" classification (+/- 10% of observed)
-    upperSuccessCLASS <- CLASStest + 10
-    bottomSuccessCLASS <- CLASStest - 10
+    cat("Model finished..\n")
     
     # count how many samples were predicted correctly
     if (allowProximity) {
+      # vectors creating boundary of "successfull" classification (+/- 10% of observed)
+      upperSuccessCLASS <- CLASStest + 10
+      bottomSuccessCLASS <- CLASStest - 10
+      
       hitCount <- length(which((as.vector(model$predclass) == bottomSuccessCLASS))) + 
         length(which((as.vector(model$predclass) == upperSuccessCLASS))) + 
         length(which((as.vector(model$predclass) == CLASStest))) 
@@ -56,17 +59,14 @@ PLSDA_performance <- function(X, CLASS, ratio, ncomp, iterations, allowProximity
     }
     
     # calculate accuracy percentage and round to 2 decimal places
-    accuracy <- round((hitCount/length(CLASStest)), 2)
+    accuracy <- round((hitCount/length(CLASStest)), 4)
     
-    # simply push accuracy to scores vector if it is first iteration
-    if (i == 1) {
-      accuracyScores[i] = accuracy
-    } else {
-      # calculate mean of all accuracy scores up to now and push it to scores vector
-      accuracyScores[i] = round(((sum(accuracyScores) + accuracy) / (length(accuracyScores) + 1)), 2)
-    }
+    # simply push accuracy to scores vector
+    accuracyScores[i] = accuracy
+    # calculate mean of all accuracy scores up to now and push it to scores mean vector
+    accuracyScoresMeans[i] = round((sum(accuracyScores) / length(accuracyScores)), 4)
   }
   
   # return vector of accuracy scores
-  return(accuracyScores)
+  return(accuracyScoresMeans)
 }
