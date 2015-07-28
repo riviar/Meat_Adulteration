@@ -5,7 +5,8 @@
 # Rafal Kural
 ########################################
 
-run_Ptest <- function(dataDirectory, dataFileNames, proximityAllowed, allowedDeviation) {
+run_Ptest <- function(dataDirectory, dataFileNames, ratio, ncomp, maxncomp, iterations,
+                      proximityAllowed, allowedDeviation) {
   ######## Process data files and load data ######
   # load data from file
   DATA <- load_file_for_regression(filepath = paste(dataDirectory, dataFileNames, sep = ""))

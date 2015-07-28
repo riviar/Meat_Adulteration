@@ -41,7 +41,7 @@ SVM_performance <- function(X, CLASS, ratio, kernel, iterations, allowProximity)
     CLASStest = randomizedSets$CLASStest
     
     # train model and predict classes for testing set
-    model <- svm(Xtrain, CLASStrain, scale=FALSE,type="C-classification",kernel=kernel, cross = 20)
+    model <- svm(Xtrain, CLASStrain, scale=FALSE,type="C-classification",kernel=kernel, cross = 40)
     predictedValues <- predict(model, Xtest)
     
     # vectors creating boundary of "successfull" classification (+/- 10% of observed)
