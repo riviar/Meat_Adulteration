@@ -25,11 +25,11 @@ generate_plots_pdf <- function(SCORES,samplenames,CLASS,varvector,filename,annot
   # create gradient to sign classes
   colorPalette <- colorRampPalette(c("blue", "green", "red"))
   
-  #calculate how many times each class appears
-  classAppearances <- table(CLASS)
+  #get unique classes
+  uniqueClasses <- unique(CLASS)
   
   # use gradient to assign each class a different color
-  colors <- colorPalette(length(classAppearances))
+  colors <- colorPalette(length(uniqueClasses))
   
   # initialize colors vector
   colorsVector <- NULL
@@ -37,19 +37,7 @@ generate_plots_pdf <- function(SCORES,samplenames,CLASS,varvector,filename,annot
   #fill colors vector
   for (i in 1:length(CLASS)) {
     #assign color depeding on class
-    if (grepl("100%", CLASS[i])) {colorsVector[i] = colors[11]}
-    else if (grepl("10%", CLASS[i])) {colorsVector[i] = colors[2]}
-    else if (grepl("20%", CLASS[i])) {colorsVector[i] = colors[3]}
-    else if (grepl("30%", CLASS[i])) {colorsVector[i] = colors[4]}
-    else if (grepl("40%", CLASS[i])) {colorsVector[i] = colors[5]}
-    else if (grepl("50%", CLASS[i])) {colorsVector[i] = colors[6]}
-    else if (grepl("60%", CLASS[i])) {colorsVector[i] = colors[7]}
-    else if (grepl("70%", CLASS[i])) {colorsVector[i] = colors[8]}
-    else if (grepl("80%", CLASS[i])) {colorsVector[i] = colors[9]}
-    else if (grepl("90%", CLASS[i])) {colorsVector[i] = colors[10]}
-    else if (grepl("0%", CLASS[i])) {colorsVector[i] = colors[1]}
-    #black color for unknown samples
-    else {colorsVector[i] == "#FFF"}
+    colorsVector[i] = colors[which(uniqueClasses == CLASS[i])]
   }
   
   # create pdf for plots
