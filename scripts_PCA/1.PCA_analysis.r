@@ -18,22 +18,32 @@ setwd(test)
 source("pca_eigen.r")
 source("run_pca_basic_scalings.r")
 source("run_pca_sg_snv_combined.r")
-source("../Toolbox/data_manipulation/load_data_from_file.r")
+source("../Toolbox/data_manipulation/load_file_for_regression.r")
 source("run_pca_sg_msc_combined.r")
+
+source("../Toolbox/scalings/rangescale.r")
 ######################
 ### LOAD FTIR DATA ###################
 # name of csv file in format of data: ID/wavelengths/Batch/Class
 #fileToLoad = "../../Data/Videometer_allbatches_kural_format.csv" #VideometerLab data
 #name of the data that will appear in result file name
 #dataName = "VM"
-fileToLoad = "../../Data/FTIR_batch4_kural_format.csv" #FTIR data
+fileToLoad = "../../Data/Exp1_GCMS_corrected_NAs_variant.csv" #FTIR data
 #name of the data that will appear in result file name
-dataName = "FTIR"
+dataName = "Exp1_GCMS_corrected_NAs"
 
 # load chosen file
-DATA <- load_data_from_file(fileToLoad)
-X <- DATA[[1]]
-CLASS <- DATA[[3]]
+DATA <- load_file_for_regression(fileToLoad)
+#X <- DATA$X
+# special workaround for GCMS data
+X <- as.numeric(DATA$X[1,])
+for(i in 2:nrow(DATA$X)) {
+  X <- rbind(X, as.numeric(DATA$X[i,]))
+}
+#X <- rangescale(X)
+
+
+CLASS <- DATA$CLASS
 #retrieve names of samples
 samplenames <- row.names(X)
 ###### DATA LOAD END #########################
@@ -42,7 +52,7 @@ samplenames <- row.names(X)
 # runs pca and creates PCA plots for first 3 PCs
 # for raw data, autoscaled data, meancentered data
 # and rangescaled data
-#run_pca_basic_scalings(X, dataName)
+run_pca_basic_scalings(X, dataName)
 
 ####### PCA S-G + SNV ########################
 # runs pca and created PCA plots for first 3 PCs
@@ -54,4 +64,4 @@ samplenames <- row.names(X)
 # runs pca and created PCA plots for first 3 PCs
 # with Savitzky-Golay and Multivariate Scatter Correction
 # combined scalings
-run_pca_sg_msc_combined(X, dataName)
+#run_pca_sg_msc_combined(X, dataName)
