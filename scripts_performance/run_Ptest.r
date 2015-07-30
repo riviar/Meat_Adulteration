@@ -13,6 +13,12 @@ run_Ptest <- function(dataDirectory, dataFileNames, ratio, ncomp, maxncomp, iter
   
   #extract wavelengths and classes
   X <- DATA[[1]]
+  # GCMS workaround
+  Xtemp <- as.numeric(X[1,])
+  for(i in 2:nrow(X)) {
+    Xtemp <- rbind(Xtemp, as.numeric(X[i,]))
+  }
+  X <- Xtemp
   CLASS <- DATA[[3]]
   ######## END Process data files and load data ######
   

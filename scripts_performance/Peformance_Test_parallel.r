@@ -35,17 +35,16 @@ registerDoMC(2)
 # path to data directory
 dataDirectory <- "../../Data/"
 # vector of data file names (each one will get separate analysis and plot)
-dataFileNames <- c("Exp2_GCMS_corrected_NAs.csv", "Exp2_HPLC.csv", 
-                   "Exp1_GCMS_corrected_NAs.csv", "Exp1_VM.csv", "Exp1_microarray.csv")
+dataFileNames <- c("Exp2_GCMS_corrected_NAs_variant.csv", "Exp1_GCMS_corrected_NAs_variant.csv")
 # vector of proximity settings for each data file 
 #(exp1 has only beef/mixed/pork classes so we need to include only direct hits)
-proximityAllowed <- c(TRUE, TRUE, FALSE, FALSE, FALSE)
+proximityAllowed <- c(TRUE, FALSE)
 
 
 # vector of proximity scores for regression (by how much can result deviate to count as hit)
 # Exp1 has classes 0-beef/1-mixed/2-pork
 # Exp 2 has classes 0/10/20/../100
-allowedDeviation <- c(10, 10, 0.5, 0.5, 0.5)
+allowedDeviation <- c(10, 0.5)
 
 # ratio of training/test set
 splitRatio <- 0.75
@@ -62,7 +61,7 @@ resultsDirectory = "../Results/Performance_Results"
 ######## END Performance test settings #########
 
 # run analysis for all files in parallel foreach
-foreach(i=1:length(dataFileNames)) %do% {
+foreach(i=1:length(dataFileNames)) %dopar% {
   run_Ptest(dataDirectory = dataDirectory, dataFileNames = dataFileNames[i], ratio = splitRatio,
             ncomp = ncomp, maxncomp = maxncomp, iterations = iterations,
             proximityAllowed = proximityAllowed[i], allowedDeviation = allowedDeviation[i])
